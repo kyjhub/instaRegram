@@ -1,0 +1,24 @@
+# MySQL 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/insta_regram?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+  jpa:
+    #true 설정시 JPA 쿼리문 확인 가능
+    show-sql: true
+    hibernate:
+      #DDL(Create, Alter, Drop) 정의시 DB의 고유 기능을 사용할 수 있다.
+      ddl-auto: update
+    properties:
+      hibernate:
+        # JPA의 구현체인 Hibernate가 동작하면서 발생한 SQL의 가독성을 높여준다.
+        format_sql: true
+    #MySQL을 사용할 것.
+    database: mysql
+  thymeleaf:
+    prefix: classpath:/templates/
+logging:
+  level:
+    org.hibernate.SQL: debug
