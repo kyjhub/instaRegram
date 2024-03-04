@@ -67,38 +67,45 @@ def instaCrawling(request):
     except:
         print('there is no video')
         # 이미지 다운
-        # 게시물 사진수
+        # 게시물 사진수 = 사진 여러개일 때 사진 하단에 동그라미 구멍 뚫린것으로
         imgIdxs = driver.find_elements(By.XPATH, "//div[@class='_acnb' or @class='_acnb _acnf']")
         imgNum = len(imgIdxs)
+
+        imgSrcs = driver.find_elements(By.XPATH, "//div[@class='_aagu _aato']//img")
+        driver.implicitly_wait(5)  # 찾을 때 까지 대기
+
         # 각 이미지 다운
         for i in range(1, imgNum + 1):
-            imgSrc = driver.find_element(By.XPATH, "//div[@class='_aagv']//img").get_attribute('src')
+            #imgSrc = driver.find_element(By.XPATH, "//div[@class='_aagv']//img").get_attribute('src')
+            imgSrc=imgSrcs[i-1].get_attribute('src')
             driver.implicitly_wait(5)  # 찾을 때 까지 대기
             # 이미지 다운
             urllib.request.urlretrieve(imgSrc, f'이미지{i}.jpg')
             driver.implicitly_wait(5)  # 찾을 때 까지 대기
-            image=Image.open(f'이미지{i}.jpg')
-            width, height = image.size
-            # 그림판에 이미지를 그대로 붙여넣는 느낌의 Draw() 함수
-            draw = ImageDraw.Draw(image)
-            #삽입할 워터마크 문자
-            text = "samsungKorea"
-            #삽입할 문자의 폰트 설정
+            print(f'이미지{i} download success')
 
+            # step2.워터마크 삽입할 이미지 불러오기
+            image=Image.open(f'./이미지{i}.jpg')
+            print(f'opening image{i} success')
+            width, height = image.size
+            # step3.그림판에 이미지를 그대로 붙여넣는 느낌의 Draw() 함수
+            draw = ImageDraw.Draw(image)
+
+            #삽입할 워터마크 문자
+            text = "regram by i___sang_"
+            #삽입할 문자의 폰트 설정
+            font=ImageFont.truetype('C:/Users/harry/Downloads/NanumPen.ttf', 30)
             # step6.삽입할 문자의 높이, 너비 정보 가져오기
-            width_txt, height_txt = draw.textsize(text)
+            _, _, width_txt, height_txt = draw.textbbox((0,0),text=text,font=font)
             # step7.워터마크 위치 설정
             margin = 10
             x = width - width_txt - margin
             y = height - height_txt - margin
             # step8.텍스트 적용하기
-            draw.text((x, y), text, fill='white')
-            # step9.이미지 출력
-            image.show()
+            draw.text((x, y), text, fill='yellow', font=font)
             # step10.현재작업 경로에 완성 이미지 저장
-            image.save("C:\study\toyProjects\instaRegram\djangoProject\watermakr.jpg")
-
-            print(f'image{i} download success')
+            image.save(f'./imageWatermarked{i}.jpg')
+            print(f'watermarking image{i} success')
             if i != imgNum:
                 driver.find_element(By.XPATH, "//button[@aria-label='다음']").click()
                 driver.implicitly_wait(5)  # 찾을 때 까지 대기

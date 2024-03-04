@@ -107,11 +107,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'KR'
-
+TIME_ZONE = 'Asia/Seoul'
+#time zone을 따로 설정하면 시간을 구할 때
+#Native datetime 객체인 datetime.datetime.now()을 사용하는 대신에
+#django.utils의 timezone을 사용해야 한다.
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
